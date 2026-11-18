@@ -19,7 +19,7 @@ const en = {
   no_match: 'No one with that name yet.',
   // home
   salaam: 'Assalamu alaikum, {name}',
-  this_week: 'This week', rank_of: '{rank} of {count}', not_ranked: 'Not on the board yet this week',
+  this_week: 'This week', of_count: 'of {count}', not_ranked: 'Not on the board yet this week',
   today: 'Today', yesterday: 'Yesterday', streak: 'Streak', days: '{n} days', day1: '1 day',
   goal_of: 'of {goal}', ammi_short: "Ammi Jaan's 1 Crore",
   add_title: 'Add Darood', add_ammi_title: 'Add for Ammi Jaan', how_many: 'How many?', add: 'Add',
@@ -80,7 +80,7 @@ const ur = {
   name_short: 'براہِ کرم اپنا پورا نام لکھیں۔', name_long: 'نام بہت لمبا ہے (زیادہ سے زیادہ 40 حروف)۔', name_letters: 'نام میں حروف ہونے چاہییں۔',
   no_match: 'اس نام کا کوئی ابھی موجود نہیں۔',
   salaam: 'السلام علیکم، {name}',
-  this_week: 'اس ہفتے', rank_of: '{count} میں سے {rank}', not_ranked: 'اس ہفتے ابھی بورڈ پر نہیں',
+  this_week: 'اس ہفتے', of_count: '{count} میں سے', not_ranked: 'اس ہفتے ابھی بورڈ پر نہیں',
   today: 'آج', yesterday: 'کل', streak: 'مسلسل دن', days: '{n} دن', day1: '1 دن',
   goal_of: '{goal} میں سے', ammi_short: 'امی جان کا ایک کروڑ',
   add_title: 'درود شامل کریں', add_ammi_title: 'امی جان کے لیے شامل کریں', how_many: 'کتنے؟', add: 'شامل کریں',

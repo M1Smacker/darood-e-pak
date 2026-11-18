@@ -125,7 +125,7 @@ export function home(S) {
       h('p', { class: 'salaam' }, t('salaam', { name: me?.name || '' })),
       h('div', { class: 'tiles' },
         h('a', { class: 'tile', href: '#board' }, h('span', { class: 'k' }, t('this_week')),
-          mine ? [h('strong', {}, h('bdi', {}, t('rank_of', { rank: `⁦#${mine.rank}⁩`, count: board.length }))), h('span', { class: 'v' }, num(mine.n))]
+          mine ? [h('strong', {}, h('bdi', { class: 'num' }, `#${mine.rank}`)), h('span', { class: 'v' }, t('of_count', { count: board.length })), h('span', { class: 'v' }, num(mine.n))]
             : h('span', { class: 'v small' }, t('not_ranked'))),
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('today')), h('strong', {}, num(todayN)),
           me?.goal ? h('span', { class: 'v' }, t('goal_of', { goal: L.fmt(me.goal) })) : null,
