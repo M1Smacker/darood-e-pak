@@ -16,7 +16,7 @@ const en = {
   is_this_you: 'Are you {name}?', yes_me: 'Yes, this is me',
   name_taken: '{name} is already here. Is that you?',
   name_short: 'Please type your full name.', name_long: 'That name is too long (40 letters at most).', name_letters: 'A name needs letters.',
-  no_match: 'No one with that name yet.',
+  no_match: 'No one with that name yet.', first_one: 'No one has joined yet. Tap "I'm new" to be the first.',
   // home
   salaam: 'Assalamu alaikum, {name}',
   this_week: 'This week', of_count: 'of {count}', not_ranked: 'Not on the board yet this week',
@@ -78,7 +78,7 @@ const ur = {
   is_this_you: 'کیا آپ {name} ہیں؟', yes_me: 'جی ہاں، یہ میں ہوں',
   name_taken: '{name} پہلے سے موجود ہے۔ کیا یہ آپ ہیں؟',
   name_short: 'براہِ کرم اپنا پورا نام لکھیں۔', name_long: 'نام بہت لمبا ہے (زیادہ سے زیادہ 40 حروف)۔', name_letters: 'نام میں حروف ہونے چاہییں۔',
-  no_match: 'اس نام کا کوئی ابھی موجود نہیں۔',
+  no_match: 'اس نام کا کوئی ابھی موجود نہیں۔', first_one: 'ابھی کوئی شامل نہیں ہوا۔ سب سے پہلے "میں نیا ہوں" دبائیں۔',
   salaam: 'السلام علیکم، {name}',
   this_week: 'اس ہفتے', of_count: '{count} میں سے', not_ranked: 'اس ہفتے ابھی بورڈ پر نہیں',
   today: 'آج', yesterday: 'کل', streak: 'مسلسل دن', days: '{n} دن', day1: '1 دن',

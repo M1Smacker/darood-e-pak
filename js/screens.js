@@ -24,7 +24,7 @@ export function signin(S) {
     const rows = peopleList().filter(([, p]) => !p.managedBy && (!q || p.key.includes(q)))
       .sort((a, b) => a[1].name.localeCompare(b[1].name));
     fill(list, ...rows.map(([pid, p]) => h('li', {}, h('button', { class: 'name-btn', onclick: () => pick(pid) }, p.name))));
-    if (!rows.length) list.append(h('li', { class: 'muted' }, t('no_match')));
+    if (!rows.length) list.append(h('li', { class: 'muted' }, t(peopleList().some(([, p]) => !p.managedBy) ? 'no_match' : 'first_one')));
   };
   const pick = async (pid) => { if (await ask(t('is_this_you', { name: nameOf(pid) }), t('yes_me'))) setMe(pid); };
   search.addEventListener('input', draw);
