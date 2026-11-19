@@ -1,6 +1,6 @@
 // Keeps the app itself on the phone so it opens with no signal. Data is kept offline by Firestore.
 // To release a change: bump VERSION here and in js/version.js (a test checks they match).
-const VERSION = '0.1.2';
+const VERSION = '0.1.3';
 const CACHE = `dep-${VERSION}`;
 const RUNTIME = 'dep-runtime'; // Firebase SDK and fonts, versioned by their own URLs
 
@@ -27,7 +27,9 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)));
+  // cache: 'reload' skips the browser's HTTP cache (GitHub Pages lets it keep files 10 minutes),
+  // so an update never mixes old and new files.
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' })))));
 });
 
 self.addEventListener('activate', (e) => {
