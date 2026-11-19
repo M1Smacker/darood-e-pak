@@ -16,7 +16,7 @@ const en = {
   is_this_you: 'Are you {name}?', yes_me: 'Yes, this is me',
   name_taken: '{name} is already here. Is that you?',
   name_short: 'Please type your full name.', name_long: 'That name is too long (40 letters at most).', name_letters: 'A name needs letters.',
-  no_match: 'No one with that name yet.', first_one: 'No one has joined yet. Tap "I'm new" to be the first.',
+  no_match: 'No one with that name yet.', first_one: "No one has joined yet. Tap \"I'm new\" to be the first.",
   // home
   salaam: 'Assalamu alaikum, {name}',
   this_week: 'This week', of_count: 'of {count}', not_ranked: 'Not on the board yet this week',

@@ -1,6 +1,6 @@
 // Keeps the app itself on the phone so it opens with no signal. Data is kept offline by Firestore.
 // To release a change: bump VERSION here and in js/version.js (a test checks they match).
-const VERSION = '0.1.1';
+const VERSION = '0.1.2';
 const CACHE = `dep-${VERSION}`;
 const RUNTIME = 'dep-runtime'; // Firebase SDK and fonts, versioned by their own URLs
 
