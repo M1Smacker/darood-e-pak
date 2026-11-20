@@ -3,7 +3,7 @@
 import { t, dateText, weekdays, monthName } from './strings.js';
 import * as L from './logic.js';
 import { h, fill, num, toast, sheet, ask, star } from './ui.js';
-import { peopleList, person, nameOf, setMe, applySize, save } from './app.js';
+import { peopleList, person, nameOf, setMe, applySize, save, addEntry } from './app.js';
 import { openCounter } from './counter.js';
 import { DAROODS, FIRST_YEAR } from './config.js';
 
@@ -19,33 +19,42 @@ const weekLabel = (wid) => { const a = L.isoWeekStart(wid); return t('week_range
 export function signin(S) {
   const list = h('ul', { class: 'names', role: 'list' });
   const search = h('input', { type: 'search', class: 'field', placeholder: t('search'), 'aria-label': t('search'), autocomplete: 'off' });
+  let joining = false;
   const draw = () => {
+    drawJoin();
+    if (joining) return; // the new name would show twice: in the list and on the button (Ahmed, 20 Nov)
     const q = L.nameKey(search.value);
     const rows = peopleList().filter(([, p]) => !p.managedBy && (!q || p.key.includes(q)))
       .sort((a, b) => a[1].name.localeCompare(b[1].name));
     fill(list, ...rows.map(([pid, p]) => h('li', {}, h('button', { class: 'name-btn', onclick: () => pick(pid) }, p.name))));
     if (!rows.length) list.append(h('li', { class: 'muted' }, t(peopleList().some(([, p]) => !p.managedBy) ? 'no_match' : 'first_one')));
   };
-  const pick = async (pid) => { if (await ask(t('is_this_you', { name: nameOf(pid) }), t('yes_me'))) setMe(pid); };
+  // One tap: the app asks again every time it is opened, so a wrong tap is fixed with Switch.
+  const pick = (pid) => setMe(pid);
   search.addEventListener('input', draw);
 
   // Whatever is typed in the box is the name to join with: one tap, no second form (Ahmed, 20 Nov).
   const err = h('p', { class: 'error', role: 'alert' });
   const joinBtn = h('button', { class: 'btn gold block', onclick: () => join() });
-  const drawJoin = () => {
+  function drawJoin() {
     const name = L.cleanName(search.value);
-    joinBtn.textContent = name && !L.nameError(name) ? t('join_as', { name }) : `+ ${t('im_new')}`;
-  };
+    joinBtn.disabled = joining || !S.store; // names show before the database is ready; joining needs it
+    joinBtn.textContent = joining ? t('joining') : !S.store ? t('connecting') : name && !L.nameError(name) ? t('join_as', { name }) : `+ ${t('im_new')}`;
+  }
   async function join() {
     err.textContent = '';
     const name = L.cleanName(search.value);
     const bad = L.nameError(name);
     if (!name || bad) { err.textContent = t(name ? `name_${bad}` : 'type_name_first'); search.focus(); return; }
-    joinBtn.disabled = true;
+    if (joining || !S.store) return;
+    joining = true;
+    fill(list);
+    drawJoin();
     try {
       setMe(await S.store.createPerson(name));
     } catch (x) {
-      joinBtn.disabled = false;
+      joining = false;
+      draw();
       if (x.message === 'name-taken' && x.pid && person(x.pid)) {
         if (await ask(t('name_taken', { name: nameOf(x.pid) }), t('yes_me'))) setMe(x.pid);
       } else if (x.code === 'permission-denied') err.textContent = t('name_taken', { name }); // lost a race for the same name
@@ -56,7 +65,6 @@ export function signin(S) {
   search.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); join(); } });
 
   draw();
-  drawJoin();
   return {
     el: h('div', { class: 'screen signin' }, search, list, err, joinBtn),
     update: draw,
@@ -86,7 +94,7 @@ function entryBox(S, kind) {
     if (r.n > L.CONFIRM_OVER && !(await ask(t('sure_big', { n: L.fmt(r.n) }), t('yes_save'), t('no_fix')))) { input.focus(); return; }
     const pid = forPid();
     input.value = '';
-    save(S.store.addEntry({ pid, kind, n: r.n, day, byPid: S.me }),
+    addEntry({ pid, kind, n: r.n, day, byPid: S.me },
       pid === S.me ? t('saved', { n: L.fmt(r.n) }) : t('saved_for', { n: L.fmt(r.n), name: nameOf(pid) })).catch(() => {});
   }
 
@@ -124,7 +132,8 @@ export function home(S) {
     const todayN = days[S.today]?.b || 0;
     const st = L.streak(days, S.today);
     fill(summary, 
-      h('p', { class: 'salaam' }, t('salaam', { name: me?.name || '' })),
+      h('div', { class: 'hello' }, h('p', { class: 'salaam' }, t('salaam', { name: me?.name || '' })),
+        h('button', { class: 'btn ghost switch', onclick: () => setMe(null) }, t('switch_person'))),
       h('div', { class: 'tiles' },
         h('a', { class: 'tile', href: '#board' }, h('span', { class: 'k' }, t('this_week')),
           mine ? [h('strong', {}, h('bdi', { class: 'num' }, `#${mine.rank}`)), h('span', { class: 'v' }, t('of_count', { count: board.length })), h('span', { class: 'v' }, num(mine.n))]
@@ -288,7 +297,6 @@ export function me(S) {
   // settings inputs are built once
   const p0 = person(S.me) || {};
   const goalIn = h('input', { class: 'field', inputMode: 'numeric', value: p0.goal ? String(p0.goal) : '', placeholder: t('goal_none'), 'aria-label': t('daily_goal') });
-  const beforeIn = h('input', { class: 'field', inputMode: 'numeric', value: p0.before ? String(p0.before) : '', placeholder: '0', 'aria-label': t('before_app') });
   const saveNum = (input, field, max) => () => {
     const r = L.parseCount(input.value, { max, zero: true });
     const val = input.value.trim() === '' ? 0 : r.n;
@@ -298,7 +306,6 @@ export function me(S) {
     save(S.store.updatePerson(S.me, { [field]: val }), t('saved', { n: L.fmt(val) })).catch(() => {});
   };
   goalIn.addEventListener('change', saveNum(goalIn, 'goal', L.MAX_ENTRY));
-  beforeIn.addEventListener('change', saveNum(beforeIn, 'before', 100000000));
   const daroodSel = h('select', { class: 'field', 'aria-label': t('darood_choice'), onchange: () => save(S.store.updatePerson(S.me, { darood: Number(daroodSel.value) })).catch(() => {}) },
     DAROODS.map((d, i) => h('option', { value: i, selected: (p0.darood || 0) === i }, d.name)));
   const sizes = h('div', { class: 'seg' });
@@ -317,9 +324,10 @@ export function me(S) {
     const marks = L.milestones(me.before || 0, Object.fromEntries(Object.entries(d).map(([k, v]) => [k, v.b])), L.ME_STEP);
     fill(stats, 
       h('div', { class: 'me-head' }, h('h1', {}, me.name),
-        h('button', { class: 'link', onclick: async () => { if (await ask(t('not_you_sure'), t('switch'))) setMe(null); } }, t('not_you'))),
+        h('button', { class: 'btn ghost switch', onclick: () => setMe(null) }, t('switch_person'))),
       h('div', { class: 'tiles' },
-        h('div', { class: 'tile' }, h('span', { class: 'k' }, t('all_time_total')), h('strong', {}, num(total + (me.before || 0)))),
+        h('div', { class: 'tile' }, h('span', { class: 'k' }, t('all_time_total')), h('strong', {}, num(total + (me.before || 0))),
+          me.before ? h('span', { class: 'v' }, t('incl_before', { n: L.fmt(me.before) })) : null),
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('this_week')), h('strong', {}, num(L.sumDays(d, 'b', wk, S.today)))),
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('streak')), h('strong', {}, (() => { const s = L.streak(d, S.today); return s === 1 ? t('day1') : t('days', { n: s }); })())),
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('best_day')), b.day ? [h('strong', {}, num(b.day.n)), h('span', { class: 'v' }, dateText(b.day.day, true))] : h('strong', {}, '·')),
@@ -332,7 +340,6 @@ export function me(S) {
   const el = h('div', { class: 'screen me' }, stats, card('', cal.el),
     card('settings', label(t('settings')),
       h('label', { class: 'set' }, h('span', {}, t('daily_goal')), goalIn),
-      h('label', { class: 'set' }, h('span', {}, t('before_app')), h('small', { class: 'muted' }, t('before_app_sub')), beforeIn),
       h('label', { class: 'set' }, h('span', {}, t('darood_choice')), daroodSel),
       h('div', { class: 'set' }, h('span', {}, t('text_size')), sizes),
       h('details', { class: 'set' }, h('summary', {}, t('install')), h('p', {}, t('install_ios')), h('p', {}, t('install_android'))),

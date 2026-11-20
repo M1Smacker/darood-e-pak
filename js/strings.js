@@ -12,7 +12,7 @@ const en = {
   // sign-in
   search: 'Find your name, or type it to join', im_new: "I'm new", cancel: 'Cancel', back: 'Back',
   join_as: 'Join as {name}', type_name_first: 'Type your full name in the box above, then tap here.',
-  is_this_you: 'Are you {name}?', yes_me: 'Yes, this is me',
+  yes_me: 'Yes, this is me', joining: 'Joining…', connecting: 'Connecting…', switch_person: 'Switch',
   name_taken: '{name} is already here. Is that you?',
   name_short: 'Please type your full name.', name_long: 'That name is too long (40 letters at most).', name_letters: 'A name needs letters.',
   no_match: 'No one with that name yet.', first_one: 'No one has joined yet. Type your full name above to be the first.',
@@ -48,9 +48,8 @@ const en = {
   // me
   all_time_total: 'All time', best_day: 'Best day', best_week: 'Best week', daily_goal: 'Daily goal',
   set_goal: 'Set a daily goal', goal_none: 'No goal set', milestones: 'Milestones', passed_on: 'Passed {n} on {day}',
-  before_app: 'Read before the app', before_app_sub: 'Your total from before you joined. Counts in All time only.',
-  settings: 'Settings', text_size: 'Text size', darood_choice: 'Darood on the counter', not_you: 'Not you?',
-  not_you_sure: 'Switch to a different name on this phone?', switch: 'Switch',
+  incl_before: 'incl. {n} from before the app',
+  settings: 'Settings', text_size: 'Text size', darood_choice: 'Darood on the counter',
   install: 'Add to Home Screen', install_ios: 'iPhone: open in Safari, tap Share, then "Add to Home Screen".',
   install_android: 'Android: open in Chrome, tap ⋮, then "Install app" or "Add to Home screen".',
   day_detail: '{day}', edit: 'Edit', delete: 'Delete', delete_sure: 'Delete this entry of {n}?',
@@ -61,6 +60,11 @@ const en = {
   months: 'January February March April May June July August September October November December',
   wd: 'Mon Tue Wed Thu Fri Sat Sun',
   week_range: '{a} to {b}',
+  // entries the database did not take
+  unsaved_bar: 'Some Darood did not save. Tap here.', unsaved_title: 'Not saved yet',
+  unsaved_sub: 'These were typed on this phone, but the database did not take them. Save them again, or remove one if it was a mistake.',
+  unsaved_moves: '(too old now: it will be saved for today)', save_again: 'Save again', remove: 'Remove',
+  unsaved_remove_sure: 'Remove {n} for {name}? It will not be saved.',
 };
 
 const ur = {
@@ -73,7 +77,7 @@ const ur = {
   syncing: 'محفوظ ہونے کا انتظار', offline: 'آف لائن، اس فون پر محفوظ',
   search: 'اپنا نام تلاش کریں، یا شامل ہونے کے لیے لکھیں', im_new: 'میں نیا ہوں', cancel: 'منسوخ', back: 'واپس',
   join_as: '{name} کے نام سے شامل ہوں', type_name_first: 'اوپر والے خانے میں اپنا پورا نام لکھیں، پھر یہاں دبائیں۔',
-  is_this_you: 'کیا آپ {name} ہیں؟', yes_me: 'جی ہاں، یہ میں ہوں',
+  yes_me: 'جی ہاں، یہ میں ہوں', joining: 'شامل ہو رہے ہیں…', connecting: 'جڑ رہا ہے…', switch_person: 'نام بدلیں',
   name_taken: '{name} پہلے سے موجود ہے۔ کیا یہ آپ ہیں؟',
   name_short: 'براہِ کرم اپنا پورا نام لکھیں۔', name_long: 'نام بہت لمبا ہے (زیادہ سے زیادہ 40 حروف)۔', name_letters: 'نام میں حروف ہونے چاہییں۔',
   no_match: 'اس نام کا کوئی ابھی موجود نہیں۔', first_one: 'ابھی کوئی شامل نہیں ہوا۔ سب سے پہلے اوپر اپنا پورا نام لکھیں۔',
@@ -104,9 +108,8 @@ const ur = {
   family_cal: 'خاندان کا کیلنڈر', my_share: 'میرا حصہ (صرف آپ دیکھ سکتے ہیں)',
   all_time_total: 'اب تک', best_day: 'بہترین دن', best_week: 'بہترین ہفتہ', daily_goal: 'روزانہ ہدف',
   set_goal: 'روزانہ ہدف مقرر کریں', goal_none: 'کوئی ہدف نہیں', milestones: 'سنگِ میل', passed_on: '{day} کو {n} مکمل کیے',
-  before_app: 'ایپ سے پہلے پڑھے', before_app_sub: 'شامل ہونے سے پہلے کا آپ کا کل۔ صرف "اب تک" میں گنا جاتا ہے۔',
-  settings: 'ترتیبات', text_size: 'حروف کا سائز', darood_choice: 'کاؤنٹر پر درود', not_you: 'آپ نہیں؟',
-  not_you_sure: 'اس فون پر کوئی اور نام منتخب کریں؟', switch: 'بدلیں',
+  incl_before: 'ایپ سے پہلے کے {n} سمیت',
+  settings: 'ترتیبات', text_size: 'حروف کا سائز', darood_choice: 'کاؤنٹر پر درود',
   install: 'ہوم اسکرین پر شامل کریں', install_ios: 'آئی فون: سفاری میں کھولیں، شیئر دبائیں، پھر "Add to Home Screen"۔',
   install_android: 'اینڈرائیڈ: کروم میں کھولیں، ⋮ دبائیں، پھر "Install app" یا "Add to Home screen"۔',
   day_detail: '{day}', edit: 'تبدیل کریں', delete: 'حذف کریں', delete_sure: '{n} کا یہ اندراج حذف کریں؟',
@@ -116,6 +119,10 @@ const ur = {
   months: 'جنوری فروری مارچ اپریل مئی جون جولائی اگست ستمبر اکتوبر نومبر دسمبر',
   wd: 'پیر منگل بدھ جمعرات جمعہ ہفتہ اتوار',
   week_range: '{a} تا {b}',
+  unsaved_bar: 'کچھ درود محفوظ نہیں ہوئے۔ یہاں دبائیں۔', unsaved_title: 'ابھی محفوظ نہیں ہوئے',
+  unsaved_sub: 'یہ اس فون پر لکھے گئے تھے، لیکن ڈیٹا بیس میں محفوظ نہیں ہوئے۔ انہیں دوبارہ محفوظ کریں، یا اگر غلطی سے لکھا تھا تو ہٹا دیں۔',
+  unsaved_moves: '(اب بہت پرانا ہے: آج کے دن میں محفوظ ہوگا)', save_again: 'دوبارہ محفوظ کریں', remove: 'ہٹا دیں',
+  unsaved_remove_sure: '{name} کے {n} ہٹا دیں؟ یہ محفوظ نہیں ہوں گے۔',
 };
 
 export const LANGS = { en, ur };

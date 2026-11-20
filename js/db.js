@@ -40,17 +40,36 @@ export function makeStore({ f, db, uid }) {
   return {
     uid,
 
-    // Returns the commit promise. Offline it stays pending until the phone is back online;
-    // the screens already show the change from the local cache.
-    addEntry({ pid, kind, n, day, byPid }) {
+    // Returns the commit promise, with the new entry's .id on it. Offline it stays pending until the
+    // phone is back online; the screens already show the change from the local cache.
+    // Saving again with the same id can never count twice: the rules refuse a second create.
+    addEntry({ pid, kind, n, day, byPid, id }) {
       checkN(n);
       const batch = f.writeBatch(db);
       const e = { pid, kind, n, day };
       const data = { ...e, at: f.serverTimestamp(), by: uid };
       if (byPid && byPid !== pid) data.byPid = byPid;
-      const r = f.doc(f.collection(db, 'entries'));
+      const r = id ? ref('entries', id) : f.doc(f.collection(db, 'entries'));
       batch.set(r, data);
       counters(batch, r.id, e, n);
+      const done = batch.commit();
+      done.id = r.id;
+      return done;
+    },
+
+    // Is this entry in the database itself (not just on this phone)? Throws when offline.
+    entrySaved: async (id) => (await f.getDocFromServer(ref('entries', id))).exists(),
+    waitForPending: () => f.waitForPendingWrites(db),
+
+    // Admin: an entry typed under the wrong name (say a parent's account) goes to the right person.
+    // The old one is hidden and points to the new one, which keeps the day, number and typing time.
+    moveEntry(id, e, toPid) {
+      const batch = f.writeBatch(db);
+      const r = f.doc(f.collection(db, 'entries'));
+      batch.update(ref('entries', id), { deleted: true, delBy: uid, delAt: f.serverTimestamp(), movedTo: r.id });
+      counters(batch, id, e, -e.n);
+      batch.set(r, { pid: toPid, kind: e.kind, n: e.n, day: e.day, at: e.at || f.serverTimestamp(), by: e.by, byPid: e.byPid || e.pid, movedFrom: id });
+      counters(batch, r.id, { ...e, pid: toPid }, e.n);
       return batch.commit();
     },
 
@@ -79,7 +98,8 @@ export function makeStore({ f, db, uid }) {
     },
 
     // New family member. Fails (permission denied) if the name is taken: the names/ lock exists.
-    async createPerson(name, { managedBy = null } = {}) {
+    // `before` (their total from the family's records) is the admin's to give.
+    async createPerson(name, { managedBy = null, before = 0 } = {}) {
       const clean = cleanName(name);
       const key = nameKey(clean);
       const taken = await f.getDoc(ref('names', key)).catch(() => null);
@@ -87,6 +107,7 @@ export function makeStore({ f, db, uid }) {
       const pid = f.doc(f.collection(db, 'entries')).id;
       const person = { name: clean, key };
       if (managedBy) person.managedBy = managedBy;
+      if (before) person.before = before;
       const batch = f.writeBatch(db);
       batch.set(ref('names', key), { pid });
       batch.set(ref('meta', 'people'), { [pid]: person, _p: pid }, { merge: true });
@@ -152,8 +173,10 @@ export function makeStore({ f, db, uid }) {
       const s = await f.getDocs(f.query(...q));
       return { rows: s.docs.map((d) => ({ id: d.id, ...d.data({ serverTimestamps: 'estimate' }) })), last: s.docs.at(-1) };
     },
+    // From the server only: an offline copy can be partial, and a rebuild, merge or export from it
+    // would quietly leave entries out.
     async allEntries() {
-      const s = await f.getDocs(f.collection(db, 'entries'));
+      const s = await f.getDocsFromServer(f.collection(db, 'entries'));
       return s.docs.map((d) => ({ id: d.id, ...d.data({ serverTimestamps: 'estimate' }) }));
     },
 
@@ -177,7 +200,7 @@ export function makeStore({ f, db, uid }) {
       }
       const writes = [];
       for (const col of ['years', 'boards', 'ammiDays']) {
-        const have = await f.getDocs(f.collection(db, col));
+        const have = await f.getDocsFromServer(f.collection(db, col));
         const ids = new Set([...have.docs.map((d) => d.id), ...Object.keys(want[col])]);
         for (const id of ids) writes.push((b) => b.set(ref(col, id), want[col][id] || {}));
       }
@@ -194,7 +217,7 @@ export function makeStore({ f, db, uid }) {
     async mergePeople(fromPid, toPid, people) {
       const from = people[fromPid]; const to = people[toPid];
       if (!from || !to || fromPid === toPid) throw new Error('bad-merge');
-      const s = await f.getDocs(f.query(f.collection(db, 'entries'), f.where('pid', '==', fromPid)));
+      const s = await f.getDocsFromServer(f.query(f.collection(db, 'entries'), f.where('pid', '==', fromPid)));
       for (let i = 0; i < s.docs.length; i += 400) {
         const b = f.writeBatch(db);
         s.docs.slice(i, i + 400).forEach((d) => b.update(d.ref, { pid: toPid }));
@@ -213,7 +236,7 @@ export function makeStore({ f, db, uid }) {
     // Admin: remove someone entirely (entries hidden, not destroyed, so a mistake can be undone by restore).
     async removePerson(pid, people) {
       const p = people[pid];
-      const s = await f.getDocs(f.query(f.collection(db, 'entries'), f.where('pid', '==', pid)));
+      const s = await f.getDocsFromServer(f.query(f.collection(db, 'entries'), f.where('pid', '==', pid)));
       for (let i = 0; i < s.docs.length; i += 400) {
         const b = f.writeBatch(db);
         s.docs.slice(i, i + 400).forEach((d) => b.update(d.ref, { deleted: true, delBy: uid, delAt: f.serverTimestamp() }));

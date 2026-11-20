@@ -3,7 +3,7 @@
 import { t, dateText } from './strings.js';
 import * as L from './logic.js';
 import { h, fill, num, toast, sheet, ask, choose, star } from './ui.js';
-import { person, nameOf, save } from './app.js';
+import { person, nameOf, addEntry } from './app.js';
 import { DAROODS } from './config.js';
 
 const KEY = (kind, pid) => `dp.ctr.${kind}.${pid}`;
@@ -78,7 +78,7 @@ export function openCounter(S, kind, pid) {
       if (!day) return;
     }
     const n = c.n;
-    save(S.store.addEntry({ pid, kind, n, day, byPid: S.me }),
+    addEntry({ pid, kind, n, day, byPid: S.me },
       pid === S.me ? t('saved', { n: L.fmt(n) }) : t('saved_for', { n: L.fmt(n), name: nameOf(pid) })).catch(() => {});
     c = { n: 0, day: S.today, target: c.target };
     keep();

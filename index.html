@@ -16,9 +16,13 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Cormorant+Garamond:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri&family=Cormorant+Garamond:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
   <link rel="stylesheet" href="css/app.css">
   <script type="module" src="js/app.js"></script>
+  <!-- the database library downloads alongside the app, not after it (keep the version in step with js/app.js) -->
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js">
 </head>
 <body>
   <header class="top">
@@ -28,6 +32,7 @@
   <div class="band" aria-hidden="true"></div>
   <p id="sync" class="sync" role="status" hidden></p>
   <button id="update" class="update" hidden>A new version is ready. Tap to update.</button>
+  <button id="unsaved" class="update bad" hidden></button>
   <main id="view" tabindex="-1"><div class="notice">Loading…</div></main>
   <nav id="tabs" class="tabs" aria-label="Main" hidden></nav>
   <div id="sheets"></div>
