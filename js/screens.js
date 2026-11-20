@@ -29,34 +29,36 @@ export function signin(S) {
   const pick = async (pid) => { if (await ask(t('is_this_you', { name: nameOf(pid) }), t('yes_me'))) setMe(pid); };
   search.addEventListener('input', draw);
 
-  const join = () => {
-    const input = h('input', { class: 'field', placeholder: t('full_name'), 'aria-label': t('full_name'), autocomplete: 'name', maxLength: 60 });
-    const err = h('p', { class: 'error', role: 'alert' });
-    const btn = h('button', { class: 'btn gold block', type: 'submit' }, t('join'));
-    const s = sheet(t('new_title'), h('form', { class: 'stack', onsubmit: async (e) => {
-      e.preventDefault();
-      const bad = L.nameError(input.value);
-      if (bad) { err.textContent = t(`name_${bad}`); return; }
-      btn.disabled = true;
-      try {
-        const pid = await S.store.createPerson(input.value);
-        s.close(); setMe(pid);
-      } catch (x) {
-        btn.disabled = false;
-        if (x.message === 'name-taken' && x.pid && person(x.pid)) {
-          s.close();
-          if (await ask(t('name_taken', { name: nameOf(x.pid) }), t('yes_me'))) setMe(x.pid);
-        } else if (x.code === 'permission-denied') err.textContent = t('name_taken', { name: L.cleanName(input.value) }); // lost a race for the same name
-        else err.textContent = t('err_save');
-      }
-    } }, input, err, btn));
+  // Whatever is typed in the box is the name to join with: one tap, no second form (Ahmed, 20 Nov).
+  const err = h('p', { class: 'error', role: 'alert' });
+  const joinBtn = h('button', { class: 'btn gold block', onclick: () => join() });
+  const drawJoin = () => {
+    const name = L.cleanName(search.value);
+    joinBtn.textContent = name && !L.nameError(name) ? t('join_as', { name }) : `+ ${t('im_new')}`;
   };
+  async function join() {
+    err.textContent = '';
+    const name = L.cleanName(search.value);
+    const bad = L.nameError(name);
+    if (!name || bad) { err.textContent = t(name ? `name_${bad}` : 'type_name_first'); search.focus(); return; }
+    joinBtn.disabled = true;
+    try {
+      setMe(await S.store.createPerson(name));
+    } catch (x) {
+      joinBtn.disabled = false;
+      if (x.message === 'name-taken' && x.pid && person(x.pid)) {
+        if (await ask(t('name_taken', { name: nameOf(x.pid) }), t('yes_me'))) setMe(x.pid);
+      } else if (x.code === 'permission-denied') err.textContent = t('name_taken', { name }); // lost a race for the same name
+      else err.textContent = t('err_save');
+    }
+  }
+  search.addEventListener('input', () => { err.textContent = ''; drawJoin(); });
+  search.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); join(); } });
 
   draw();
+  drawJoin();
   return {
-    el: h('div', { class: 'screen signin' },
-      h('div', { class: 'hero' }, star(56, 'star big'), h('h1', {}, t('who')), h('p', { class: 'muted' }, t('who_sub'))),
-      search, list, h('button', { class: 'btn ghost block', onclick: join }, '+ ', t('im_new'))),
+    el: h('div', { class: 'screen signin' }, search, list, err, joinBtn),
     update: draw,
   };
 }

@@ -157,6 +157,7 @@ html[dir="rtl"] .ammi-bar .bar i { background-image: linear-gradient(270deg, #2f
 .hero { text-align: center; padding: 18px 0 4px; }
 .hero h1 { font-family: var(--display); font-size: 2.2rem; margin: 8px 0 0; font-weight: 600; color: var(--gold-hi); }
 .star.big { width: 56px; height: 56px; }
+.signin { padding-top: 6px; }
 .names { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; max-height: 52vh; overflow: auto; }
 .name-btn { width: 100%; text-align: start; padding: 14px 16px; min-height: 52px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); cursor: pointer; overflow-wrap: anywhere; }
 .name-btn:hover { border-color: var(--gold); }
