@@ -1,4 +1,4 @@
-/* Darood-e-Pak: night sky and gold, with eight-point star (khatam) geometry. Dark only (Q41). */
+/* Darood-e-Pak: night sky and gold, a crescent mark and a quiet diamond lattice. No eight-point star (Ahmed, 21 Nov). Dark only (Q41). */
 
 :root {
   --bg: #070b18;
@@ -21,7 +21,7 @@
   --font: 'Figtree', 'Noto Nastaliq Urdu', system-ui, sans-serif;
   --display: 'Cormorant Garamond', 'Noto Nastaliq Urdu', Georgia, serif;
   --nums: 'Figtree', system-ui, sans-serif;
-  --girih: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60' fill='none' stroke='%23d4af5f' stroke-width='.8'%3E%3Cg id='s'%3E%3Cpath d='M18 18h24v24H18z'/%3E%3Cpath d='M30 13l17 17-17 17-17-17z'/%3E%3C/g%3E%3Cuse href='%23s' x='-30' y='-30'/%3E%3Cuse href='%23s' x='30' y='-30'/%3E%3Cuse href='%23s' x='-30' y='30'/%3E%3Cuse href='%23s' x='30' y='30'/%3E%3Cpath d='M47 30h13M0 30h13M30 47v13M30 0v13M42 42l6 6M18 18l-6-6M42 18l6-6M18 42l-6 6'/%3E%3C/svg%3E");
+  --lattice: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40' fill='none' stroke='%23d4af5f' stroke-width='.8'%3E%3Cpath d='M0 20L20 0L40 20L20 40Z'/%3E%3C/svg%3E");
   color-scheme: dark;
   font-size: 100%;
 }
@@ -39,8 +39,8 @@ body {
   padding-bottom: calc(84px + env(safe-area-inset-bottom));
 }
 html[lang="ur"] body { line-height: 2.1; }
-body::before { /* faint girih over the whole sky */
-  content: ''; position: fixed; inset: 0; pointer-events: none; opacity: .05; background: var(--girih); background-size: 60px; z-index: 0;
+body::before { /* faint lattice over the whole sky */
+  content: ''; position: fixed; inset: 0; pointer-events: none; opacity: .05; background: var(--lattice); background-size: 60px; z-index: 0;
 }
 body.counting { overflow: hidden; }
 button, input, select { font: inherit; color: inherit; }
@@ -57,15 +57,15 @@ a { color: var(--gold-hi); }
   padding: calc(10px + env(safe-area-inset-top)) 16px 10px; background: rgba(7, 11, 24, .88); backdrop-filter: blur(10px);
 }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 1.45rem; font-weight: 600; color: var(--gold-hi); letter-spacing: .01em; }
-.brand .star { width: 22px; height: 22px; }
-.star { fill: none; stroke: currentColor; stroke-width: 1.4; color: var(--gold); flex: none; }
+.brand .mark { width: 22px; height: 22px; }
+.mark { fill: currentColor; color: var(--gold); flex: none; }
 .lang { display: flex; border: 1px solid var(--line-strong); border-radius: 999px; overflow: hidden; }
 .lang button { background: none; border: 0; padding: 6px 14px; min-height: 36px; cursor: pointer; color: var(--muted); font-family: 'Figtree', sans-serif; }
 .lang button[lang="ur"] { font-family: 'Noto Nastaliq Urdu', serif; line-height: 1; padding-block: 4px 8px; }
 .lang button.on { background: var(--gold); color: #1a1405; font-weight: 600; }
 .band { /* ornamental band under the header */
   position: sticky; top: calc(56px + env(safe-area-inset-top)); z-index: 4; height: 10px; opacity: .55;
-  background: var(--girih) center / 30px; border-block: 1px solid var(--line);
+  background: var(--lattice) center / 10px; border-block: 1px solid var(--line);
 }
 .sync { position: sticky; top: calc(70px + env(safe-area-inset-top)); z-index: 4; margin: 6px auto 0; width: max-content; max-width: 90%;
   padding: 2px 12px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); color: var(--gold-hi); font-size: .8rem; }
@@ -93,9 +93,9 @@ html[lang="ur"] .tabs a { font-size: .74rem; line-height: 1.6; }
   position: relative; background: linear-gradient(180deg, var(--card-2), var(--card)); border: 1px solid var(--line);
   border-radius: var(--radius); padding: 16px;
 }
-.card::before, .card::after { /* small gold corner stars */
+.card::before, .card::after { /* small gold corner diamonds */
   content: ''; position: absolute; width: 14px; height: 14px; top: -7px; opacity: .8;
-  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -12 24 24' fill='none' stroke='%23d4af5f' stroke-width='1.6'%3E%3Crect x='-7.5' y='-7.5' width='15' height='15'/%3E%3Crect x='-7.5' y='-7.5' width='15' height='15' transform='rotate(45)'/%3E%3C/svg%3E") center / contain no-repeat;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -12 24 24' fill='none' stroke='%23d4af5f' stroke-width='1.8'%3E%3Cpath d='M0 -7L7 0L0 7L-7 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .card::before { inset-inline-start: 14px; }
 .card::after { inset-inline-end: 14px; }
@@ -103,8 +103,8 @@ html[lang="ur"] .tabs a { font-size: .74rem; line-height: 1.6; }
 .label { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
 html[lang="ur"] .label { letter-spacing: 0; text-transform: none; font-size: .9rem; }
 .card.ammi .label, .counter.ammi .label, .ammi-screen .label { color: var(--ammi); }
-.ammi-screen .label .star { color: var(--ammi); }
-.card.ammi .label .star { color: var(--ammi); }
+.ammi-screen .label .mark { color: var(--ammi); }
+.card.ammi .label .mark { color: var(--ammi); }
 .label.quiet { margin: 4px 4px -6px; color: var(--muted); }
 .row { display: flex; align-items: center; }
 .row.gap { gap: 10px; } .row.wrap { flex-wrap: wrap; } .row.between { justify-content: space-between; gap: 10px; }
@@ -158,7 +158,6 @@ html[dir="rtl"] .ammi-bar .bar i { background-image: linear-gradient(270deg, #2f
 /* ---------- sign-in ---------- */
 .hero { text-align: center; padding: 18px 0 4px; }
 .hero h1 { font-family: var(--display); font-size: 2.2rem; margin: 8px 0 0; font-weight: 600; color: var(--gold-hi); }
-.star.big { width: 56px; height: 56px; }
 .signin { padding-top: 6px; }
 .names { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; max-height: 52vh; overflow: auto; }
 .name-btn { width: 100%; text-align: start; padding: 14px 16px; min-height: 52px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); cursor: pointer; overflow-wrap: anywhere; }
@@ -180,7 +179,7 @@ html[lang="ur"] .tile .k { text-transform: none; letter-spacing: 0; font-size: .
 .mini-ammi { display: block; text-decoration: none; color: inherit; margin-top: 12px; }
 .entry .row.gap > .field { flex: 1; }
 .counter-btn { margin-top: 10px; }
-.counter-btn .star { width: 18px; height: 18px; }
+.counter-btn .mark { width: 18px; height: 18px; }
 .entries, .feed, .log { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .entries li, .feed li { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
 .entries li > :first-child, .feed .who { flex: 1; min-width: 0; overflow-wrap: anywhere; }
@@ -195,12 +194,13 @@ html[lang="ur"] .tile .k { text-transform: none; letter-spacing: 0; font-size: .
   padding: 12px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
 .podium .p1 { order: 2; padding-block: 18px 16px; border-color: var(--gold); box-shadow: 0 0 30px rgba(212, 175, 95, .15); }
 .podium .p2 { order: 1; } .podium .p3 { order: 3; }
-.podium .p2 .star { color: #cfd6e6; } .podium .p3 .star { color: #d39a6a; }
+.podium .p2 .medal { color: #cfd6e6; } .podium .p3 .medal { color: #d39a6a; }
 .podium .who { font-weight: 600; overflow-wrap: anywhere; font-size: .95rem; }
 .podium .n { color: var(--gold-hi); font-size: 1.1rem; }
 .podium li.me, .list li.me { outline: 2px solid var(--gold-hi); outline-offset: -2px; }
-.medal { position: relative; display: grid; place-items: center; }
-.medal b { position: absolute; font-size: .8rem; color: var(--ink); }
+.medal { display: grid; place-items: center; width: 30px; height: 30px; border: 2px solid currentColor; border-radius: 50%; color: var(--gold); }
+.podium .p1 .medal { width: 38px; height: 38px; }
+.medal b { font-size: .85rem; color: var(--ink); }
 .list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .list li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
 .list .rank { color: var(--muted); min-width: 2.5em; }
@@ -271,7 +271,7 @@ details.set summary { cursor: pointer; font-weight: 600; min-height: 36px; }
   background: radial-gradient(80% 50% at 50% 40%, #1a2552 0%, var(--bg) 70%); touch-action: manipulation; user-select: none; -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent; outline: none; overflow: hidden;
 }
-.counter::before { content: ''; position: absolute; inset: 0; opacity: .07; background: var(--girih); background-size: 80px; pointer-events: none; }
+.counter::before { content: ''; position: absolute; inset: 0; opacity: .07; background: var(--lattice); background-size: 80px; pointer-events: none; }
 .counter.ammi { --gold: var(--ammi); --gold-hi: #a7ecd3; background: radial-gradient(80% 50% at 50% 40%, #0f3a33 0%, var(--bg) 70%); }
 .ctr-head { width: 100%; max-width: 34rem; display: flex; justify-content: space-between; align-items: center; position: relative; }
 .ctr-head strong { color: var(--gold-hi); font-family: var(--display); font-size: 1.3rem; }
@@ -284,7 +284,7 @@ details.set summary { cursor: pointer; font-weight: 600; min-height: 36px; }
 .ring .track { stroke: rgba(212, 175, 95, .18); }
 .counter.ammi .ring .track { stroke: rgba(111, 207, 174, .2); }
 .ring .arc { stroke: var(--gold-hi); stroke-linecap: round; transition: stroke-dashoffset .25s ease; }
-.ghost-star { position: absolute; width: 62%; height: auto; opacity: .16; color: var(--gold); }
+.ghost-mark { position: absolute; width: 56%; height: auto; opacity: .12; color: var(--gold); }
 .ctr-num { position: relative; text-align: center; }
 .count { font-size: clamp(3.4rem, 18vw, 5.6rem); font-weight: 600; line-height: 1; color: var(--ink); }
 .count-sub { color: var(--muted); margin-top: 8px; font-size: .95rem; }

@@ -80,18 +80,15 @@ export function choose(question, options, note) {
   });
 }
 
-// The eight-point star (khatam) used across the app, as an SVG element.
-export function star(size = 24, cls = 'star') {
+// The crescent moon, the app's mark, as an SVG element. (No eight-point star anywhere: Ahmed, 21 Nov.)
+export function crescent(size = 24, cls = 'mark') {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
   svg.setAttribute('viewBox', '-12 -12 24 24');
   svg.setAttribute('width', size); svg.setAttribute('height', size);
   svg.setAttribute('class', cls); svg.setAttribute('aria-hidden', 'true');
-  for (const rot of [0, 45]) {
-    const r = document.createElementNS(ns, 'rect');
-    r.setAttribute('x', -7.5); r.setAttribute('y', -7.5); r.setAttribute('width', 15); r.setAttribute('height', 15);
-    r.setAttribute('transform', `rotate(${rot})`);
-    svg.append(r);
-  }
+  const p = document.createElementNS(ns, 'path');
+  p.setAttribute('d', 'M-0.8 -8.96A9 9 0 1 0 8.69 2.34A7.4 7.4 0 1 1 -0.8 -8.96Z');
+  svg.append(p);
   return svg;
 }

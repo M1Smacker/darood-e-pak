@@ -275,7 +275,7 @@ function drawChrome() {
 const ICONS = {
   home: 'M3 11 12 3l9 8v10h-6v-6H9v6H3z',
   board: 'M4 21V11h4v10zm6 0V5h4v16zm6 0v-7h4v7z',
-  ammi: 'M12 2l2.4 4.2L19 5l-1.2 4.8L22 12l-4.2 2.2L19 19l-4.6-1.2L12 22l-2.4-4.2L5 19l1.2-4.8L2 12l4.2-2.2L5 5l4.6 1.2z',
+  ammi: 'M11.12 2.14A9.9 9.9 0 1 0 21.56 14.57A8.14 8.14 0 1 1 11.12 2.14Z', // crescent
   me: 'M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm-8 9c0-4.4 3.6-7 8-7s8 2.6 8 7z',
 };
 function drawTabs() {

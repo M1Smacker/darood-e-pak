@@ -2,7 +2,7 @@
 // a call or a locked screen never loses it (Q31). The screen stays awake while it is open (Q72).
 import { t, dateText } from './strings.js';
 import * as L from './logic.js';
-import { h, fill, num, toast, sheet, ask, choose, star } from './ui.js';
+import { h, fill, num, toast, sheet, ask, choose, crescent } from './ui.js';
 import { person, nameOf, addEntry } from './app.js';
 import { DAROODS } from './config.js';
 
@@ -96,7 +96,7 @@ export function openCounter(S, kind, pid) {
       pid !== S.me ? h('span', { class: 'muted small' }, ` · ${nameOf(pid)}`) : null),
     h('div', { class: 'row gap' }, h('button', { class: 'link', onclick: reset }, t('reset')),
       h('button', { class: 'icon-btn', 'aria-label': t('close'), onclick: () => close() }, '✕')));
-  const face = h('div', { class: 'ctr-face' }, svg, star(220, 'star ghost-star'), h('div', { class: 'ctr-num' }, big, sub));
+  const face = h('div', { class: 'ctr-face' }, svg, crescent(220, 'mark ghost-mark'), h('div', { class: 'ctr-num' }, big, sub));
   const root = h('div', { class: `counter ${kind === 'a' ? 'ammi' : ''}`, role: 'dialog', 'aria-modal': 'true', 'aria-label': t('counter_title'), tabIndex: -1 },
     head, text, face, targets, controls);
 

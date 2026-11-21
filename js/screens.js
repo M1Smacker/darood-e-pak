@@ -2,7 +2,7 @@
 // Parts with inputs are built once; update() only refreshes numbers, so typing is never interrupted.
 import { t, dateText, weekdays, monthName } from './strings.js';
 import * as L from './logic.js';
-import { h, fill, num, toast, sheet, ask, star } from './ui.js';
+import { h, fill, num, toast, sheet, ask, crescent } from './ui.js';
 import { peopleList, person, nameOf, setMe, applySize, save, addEntry } from './app.js';
 import { openCounter } from './counter.js';
 import { DAROODS, FIRST_YEAR } from './config.js';
@@ -12,7 +12,7 @@ const myDays = (S) => L.flattenYears(S.years);
 const yearsSoFar = (S) => { const out = []; for (let y = FIRST_YEAR; y <= Number(S.today.slice(0, 4)); y++) out.push(y); return out; };
 const fmtTime = (ts) => (ts?.toDate ? ts.toDate() : null)?.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) || '';
 const card = (cls, ...kids) => h('section', { class: `card ${cls}` }, ...kids);
-const label = (text) => h('h3', { class: 'label' }, star(12), h('span', {}, text));
+const label = (text) => h('h3', { class: 'label' }, crescent(12), h('span', {}, text));
 const weekLabel = (wid) => { const a = L.isoWeekStart(wid); return t('week_range', { a: dateText(a), b: dateText(L.addDays(a, 6)) }); };
 
 // ================= sign-in =================
@@ -106,7 +106,7 @@ function entryBox(S, kind) {
       h('div', { class: 'row gap wrap' },
         h('label', { class: 'mini' }, h('span', {}, t('day_label')), daySel),
         forSel && h('label', { class: 'mini' }, h('span', {}, t('for_label')), forSel))),
-    h('button', { class: 'btn ghost block counter-btn', onclick: () => openCounter(S, kind, forPid()) }, star(18), ' ', t('tap_counter')));
+    h('button', { class: 'btn ghost block counter-btn', onclick: () => openCounter(S, kind, forPid()) }, crescent(18), ' ', t('tap_counter')));
 }
 
 function ammiBar(S) {
@@ -180,7 +180,7 @@ export function board(S) {
     const podium = rows.slice(0, 3);
     fill(body, 
       h('ol', { class: 'podium' }, podium.map((r, i) => h('li', { class: `p${i + 1} ${r.pid === S.me ? 'me' : ''}` },
-        h('span', { class: 'medal' }, star(i === 0 ? 34 : 26), h('b', {}, h('bdi', {}, r.rank))),
+        h('span', { class: 'medal' }, h('b', {}, h('bdi', {}, r.rank))),
         h('span', { class: 'who' }, nameOf(r.pid)), num(r.n, 'n')))),
       h('ol', { class: 'list' }, rows.slice(3).map((r) => row(r))),
       tab === 'all' ? h('p', { class: 'muted small' }, t('before_incl')) : null);
@@ -269,9 +269,9 @@ export function ammi(S) {
         h('div', {}, h('span', { class: 'k' }, t('remaining')), h('strong', {}, num(p.remaining))),
         h('div', {}, h('span', { class: 'k' }, t('week_total')), h('strong', {}, num(L.sumDays(Object.fromEntries(Object.entries(days).map(([k, n]) => [k, { a: n }])), 'a', wk, S.today)))),
         h('div', {}, h('span', { class: 'k' }, t('month_total')), h('strong', {}, num(L.sumDays(Object.fromEntries(Object.entries(days).map(([k, n]) => [k, { a: n }])), 'a', `${S.today.slice(0, 7)}-01`, S.today))))),
-      p.done ? h('p', { class: 'done-line' }, star(16), ' ', doneDay ? t('complete', { day: dateText(doneDay, true) }) : t('complete_short')) : null,
+      p.done ? h('p', { class: 'done-line' }, crescent(16), ' ', doneDay ? t('complete', { day: dateText(doneDay, true) }) : t('complete_short')) : null,
       start ? h('p', { class: 'muted small' }, `${t('read_by_her')}: `, num(start)) : h('p', { class: 'muted small' }, t('start_unset')),
-      marks.filter((x) => x.at < L.AMMI_TARGET).reverse().map((x) => h('p', { class: 'milestone' }, star(12), ' ', t('reached_on', { n: L.fmt(x.at), day: dateText(x.day, true) })))));
+      marks.filter((x) => x.at < L.AMMI_TARGET).reverse().map((x) => h('p', { class: 'milestone' }, crescent(12), ' ', t('reached_on', { n: L.fmt(x.at), day: dateText(x.day, true) })))));
     entry.hidden = p.done;
     const rows = feed.filter((e) => !e.deleted).sort((a, b) => (b.at?.seconds || 0) - (a.at?.seconds || 0));
     fill(lists, 
@@ -333,7 +333,7 @@ export function me(S) {
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('best_day')), b.day ? [h('strong', {}, num(b.day.n)), h('span', { class: 'v' }, dateText(b.day.day, true))] : h('strong', {}, '·')),
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('best_week')), b.week ? [h('strong', {}, num(b.week.n)), h('span', { class: 'v' }, weekLabel(b.week.week))] : h('strong', {}, '·')),
         h('div', { class: 'tile' }, h('span', { class: 'k' }, t('daily_goal')), me.goal ? [h('strong', {}, num(d[S.today]?.b || 0)), h('span', { class: 'v' }, t('goal_of', { goal: L.fmt(me.goal) }))] : h('span', { class: 'v' }, t('goal_none')))),
-      marks.length ? card('', label(t('milestones')), marks.slice().reverse().map((x) => h('p', { class: 'milestone' }, star(12), ' ', t('passed_on', { n: L.fmt(x.at), day: dateText(x.day, true) })))) : null);
+      marks.length ? card('', label(t('milestones')), marks.slice().reverse().map((x) => h('p', { class: 'milestone' }, crescent(12), ' ', t('passed_on', { n: L.fmt(x.at), day: dateText(x.day, true) })))) : null);
     cal.draw(S.today);
   }
 
